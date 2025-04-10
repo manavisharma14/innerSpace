@@ -1,12 +1,33 @@
-import JournalForm from './components/JournalForm'
 import './index.css'
+//import InsightCard from './componnets/InsightCard'
+import Navbar from './components/Navbar'
+import Home from './pages/Home'
+import MoodSelect from './pages/MoodSelect'
+import DailyJournal from './components/DailyJournal'
+import WeeklyReflection from './components/WeeklyReflection'
+import SelfCareMenu from './components/SelfCareMenu'
+import AffirmationsPage from './components/AffirmationsPage'
+import EnergyTracker from './components/EnergyTracker'
+import TriggerTracker from './components/TriggerTracker'
+
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 p-6 text-gray-800">
-      <h1 className="text-3xl font-bold mb-4">ReflectAI</h1>
-      <JournalForm />
-    </div>
+    <div className='bg-gradient-to-br from-pink-50 via-purple-50'>
+            <Navbar />
+            <Home />
+            <MoodSelect />
+            <DailyJournal />
+            <WeeklyReflection />
+            <SelfCareMenu />
+            <AffirmationsPage />
+            <EnergyTracker/>
+            <TriggerTracker />
+
+
+      </div>
+
+
   )
 }
 
