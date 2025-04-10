@@ -4,11 +4,9 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import MoodSelect from './pages/MoodSelect'
 import DailyJournal from './components/DailyJournal'
-import WeeklyReflection from './components/WeeklyReflection'
-import SelfCareMenu from './components/SelfCareMenu'
-import AffirmationsPage from './components/AffirmationsPage'
-import EnergyTracker from './components/EnergyTracker'
-import TriggerTracker from './components/TriggerTracker'
+//import WeeklyReflection from './components/WeeklyReflection'
+//import SelfCareMenu from './components/SelfCareMenu'
+//import AffirmationsPage from './components/AffirmationsPage'
 
 
 function App() {
@@ -18,11 +16,7 @@ function App() {
             <Home />
             <MoodSelect />
             <DailyJournal />
-            <WeeklyReflection />
-            <SelfCareMenu />
-            <AffirmationsPage />
-            <EnergyTracker/>
-            <TriggerTracker />
+
 
 
       </div>
