@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import MoodSelect from './pages/MoodSelect'
 import DailyJournal from './components/DailyJournal'
+import SelfCareCalendar from './pages/SelfCareCalendar'
 //import WeeklyReflection from './components/WeeklyReflection'
 //import SelfCareMenu from './components/SelfCareMenu'
 //import AffirmationsPage from './components/AffirmationsPage'
@@ -16,6 +17,7 @@ function App() {
             <Home />
             <MoodSelect />
             <DailyJournal />
+            <SelfCareCalendar />
 
 
 

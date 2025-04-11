@@ -1,14 +1,14 @@
-# app/routes/ai_analysis.py
-
 from fastapi import APIRouter
 from pydantic import BaseModel
-import google.generativeai as genai  # Google Gemini SDK
+import google.generativeai as genai
 import os
+from dotenv import load_dotenv
 
 router = APIRouter()
 
-# Load Gemini API Key from .env or directly here
-genai.configure(api_key=os.getenv("AIzaSyBP6UMwzyODQhNiNH-FW04ij6Q-JowreKA"))
+# Load API Key
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 class JournalEntry(BaseModel):
     gratitude: str
@@ -21,19 +21,27 @@ class JournalEntry(BaseModel):
 async def analyze_journal(entry: JournalEntry):
 
     prompt = f"""
-    Analyze this journaling entry and return:
-    - A reflection summary (empathetic tone)
-    - A positive affirmation generated from the context
-    - One gentle suggestion for the user
+    You're an empathetic well-being coach for a journaling app.
 
-    Journal:
+    Your job is to read today's journal entry and respond like a real person — warm, encouraging, realistic.
+
+    Please return:
+
+    1. A short reflection summary (conversational, warm tone)
+    2. A personal affirmation (relatable, down-to-earth)
+    3. A gentle suggestion for tomorrow (small action, healthy habit, mindset shift)
+
+    --- Journal Entry ---
     Gratitude: {entry.gratitude}
     Physical State: {entry.physicalState}
     Self Care: {entry.selfCare}
     Notes: {entry.notes}
+    ----------------------
+
+    Be kind. Be specific. Be human.
     """
 
-    model = genai.getGenerativeModel({"model": "models/gemini-1.5-pro-latest"})
+    model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
     response = model.generate_content(prompt)
 
     return {"reflection": response.text}

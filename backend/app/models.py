@@ -1,11 +1,14 @@
-from pydantic import BaseModel
-from typing import Optional
-from datetime import date
+from sqlalchemy import Column, Table, Integer, String, Date
+from app.db import metadata
 
-class JournalEntry(BaseModel):
-    user_id: str
-    date: date
-    gratitude: str
-    mood: Optional[str] = None
-    self_care: Optional[str] = None
-    notes: Optional[str] = None
+journal = Table(
+    "journal",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("user_id", String),
+    Column("date", Date),
+    Column("gratitude", String),  # <--- FIXED typo here
+    Column("mood", String),
+    Column("self_care", String),
+    Column("notes", String),
+)

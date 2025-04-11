@@ -10,7 +10,7 @@ export default function Home() {
         </h1>
   
         <p className="text-lg sm:text-xl text-gray-600 max-w-xl">
-          Start your self-care journey with daily reflections powered by AI.
+          The place where your thoughts live, grow, and reflect back to you.
         </p>
   
         <button className="mt-8 bg-purple-500 hover:bg-purple-600 text-white font-medium px-6 py-3 rounded-full text-lg shadow-md transition">
