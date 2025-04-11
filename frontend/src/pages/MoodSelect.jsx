@@ -1,5 +1,7 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
+
 
 const moods = [
   { name: "Smiling", file: "smiling.png" },
@@ -24,7 +26,12 @@ export default function MoodSelect() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-12">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="min-h-screen flex flex-col items-center px-4 py-12"
+    >
       <h1 className="text-3xl sm:text-4xl font-bold text-purple-600 font-nunito mb-10 text-center">
         How are you feeling today?
       </h1>
@@ -35,7 +42,7 @@ export default function MoodSelect() {
             key={index}
             className={`rounded-full p-1 transition-all duration-200 ${
               selected === mood.name
-                ? "ring-4 ring-purple-500 scale-105"
+                ? "ring-4 ring-purple-500 scale-105 animate-pulse"
                 : "hover:scale-105"
             }`}
             onClick={() => setSelected(mood.name)}
@@ -43,7 +50,7 @@ export default function MoodSelect() {
             <img
               src={`/moods/${mood.file}`}
               alt={mood.name}
-              className="w-24 h-24 rounded-full object-cover"
+              className="w-24 h-24 rounded-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
             />
             <p className="text-sm text-center mt-2 text-gray-600">{mood.name}</p>
           </button>
@@ -61,6 +68,6 @@ export default function MoodSelect() {
       >
         Continue to Journal
       </button>
-    </div>
+    </motion.div>
   )
 }

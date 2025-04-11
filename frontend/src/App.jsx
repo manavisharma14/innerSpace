@@ -1,4 +1,6 @@
 import './index.css'
+import 'animate.css';
+
 //import InsightCard from './componnets/InsightCard'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
