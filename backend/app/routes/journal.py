@@ -7,16 +7,20 @@ from app.db import database
 router = APIRouter()
 
 
-
 @router.post("/journal/")
 async def create_entry(entry: JournalEntry):
     query = journal.insert().values(
-        user_id = entry.user_id,
-        date = entry.date,
-        gratitude = entry.gratitude,
-        mood = entry.mood,
-        self_care = entry.self_care,
-        notes = entry.notes
+        user_id=entry.user_id,
+        date=entry.date,
+        gratitude=entry.gratitude,
+        mood=entry.mood,
+        self_care=entry.self_care,
+        notes=entry.notes,
+        wake_up_time=entry.wake_up_time,      # new
+        sleep_time=entry.sleep_time,          # new
+        water_intake=entry.water_intake,      # new
+        task=entry.task,                      # new
+        task_status=entry.task_status         # new
     )
 
     await database.execute(query)
