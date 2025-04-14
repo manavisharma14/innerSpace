@@ -50,7 +50,7 @@ export default function DailyJournal({setMarkedEntries}) {
     try {
       // Save Journal Entry
       // const response = await fetch('http://localhost:8000/journal/', {
-        const response = await fetch('https://innerspaceai.netlify.app/journal/', {
+        const response = await fetch('https://innerspace-backend.onrender.com/journal/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEntry),

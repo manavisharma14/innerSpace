@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('http://localhost:8000/journal/')
+      const res = await fetch('https://innerspace-backend.onrender.com/journal/')
       const data = await res.json()
       setMarkedEntries(data)
     }
