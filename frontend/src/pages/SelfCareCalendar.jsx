@@ -1,48 +1,40 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-export default function SelfCareCalendar() {
-    const [markedEntries, setMarkedEntries] = useState([]) 
+export default function SelfCareCalendar({ markedEntries }) {
+
   const [selectedEntry, setSelectedEntry] = useState(null)
+  const [currentMonth, setCurrentMonth] = useState(new Date())
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch('http://localhost:8000/journal/')
-      const data = await res.json()
-  
-      // Old:
-      // const datesOnly = data.map((entry) => entry.date)
-      // setMarkedDates(datesOnly)
-  
-      // New:
-      setMarkedEntries(data)
-    }
-  
-    fetchData()
-  }, [])
+  // REMOVE THIS FETCH:
+  // useEffect(() => { fetchData }, [])
 
-  
+  const formatDateKansas = (date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`   // correct format: yyyy-mm-dd
+  }
   
 
-  const handleDayClick = async (dateStr) => {
-    if (markedDates.includes(dateStr)) {
-      const res = await fetch(`http://localhost:8000/journal/${dateStr}`)
-      const data = await res.json()
-      setSelectedEntry(data)
-    }
+  const handlePrevMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))
+  }
+
+  const handleNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))
   }
 
   const generateCalendar = () => {
-    const today = new Date()
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
+    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate()
 
-  
     return [...Array(daysInMonth)].map((_, index) => {
       const day = index + 1
-      const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-  
+      const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+      const dateStr = formatDateKansas(date).split('/').reverse().join('-') // 'yyyy-mm-dd'
+
       const entryData = markedEntries.find((entry) => entry.date === dateStr)
       const isMarked = !!entryData
-  
+
       return (
         <div
           key={day}
@@ -56,11 +48,18 @@ export default function SelfCareCalendar() {
       )
     })
   }
-  
 
   return (
     <div className="max-w-xl mx-auto py-10">
       <h1 className="text-3xl font-bold text-purple-600 mb-6">Self Care Calendar</h1>
+
+      <div className="flex justify-between items-center mb-4">
+        <button onClick={handlePrevMonth} className="text-purple-600 font-semibold">{'<'}</button>
+        <h2 className="text-xl font-bold text-purple-600">
+          {currentMonth.toLocaleString('default', { month: 'long', timeZone: 'America/Chicago' })} {currentMonth.getFullYear()}
+        </h2>
+        <button onClick={handleNextMonth} className="text-purple-600 font-semibold">{'>'}</button>
+      </div>
 
       <div className="grid grid-cols-7 gap-2">{generateCalendar()}</div>
 

@@ -6,7 +6,8 @@ class JournalEntry(BaseModel):
     user_id: str
     date: date
     gratitude: str
-    mood: Optional[str] = None
+    mood_emotion: Optional[str] = None   # from MoodSelect.jsx
+    mood_physical: Optional[str] = None  # from physicalState input
     self_care: Optional[str] = None
     notes: Optional[str] = None
     wake_up_time: Optional[str] = None     # new

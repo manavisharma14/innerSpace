@@ -8,8 +8,11 @@ export default function WeeklyReflection() {
   const [lessons, setLessons] = useState('')
   const [nextWeekGoal, setNextWeekGoal] = useState('')
 
+  const user_id = localStorage.getItem('user_id') 
+
   const handleSubmit = () => {
     const reflectionEntry = {
+      user_id,
       bestMoment,
       proudOf,
       challenges,

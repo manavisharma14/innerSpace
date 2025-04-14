@@ -2,6 +2,7 @@ import { auth, provider } from "../firebase"
 import { signInWithPopup } from "firebase/auth"
 import { useState } from "react"
 import logo from "../assets/logoreflectai.png"
+import { Link } from "react-router-dom"
 
 function Navbar() {
   const [user, setUser] = useState(null)
@@ -10,10 +11,17 @@ function Navbar() {
     try {
       const result = await signInWithPopup(auth, provider)
       setUser(result.user)
+      console.log("User logged in:", result.user)
+      console.log("User ID:", result.user.uid)
+  
+      // Optional: Store it for backend usage
+      localStorage.setItem("user_id", result.user.uid)
     } catch (err) {
       console.error("Login failed", err)
     }
   }
+  
+  
 
   const handleLogout = () => {
     auth.signOut()
@@ -34,11 +42,15 @@ function Navbar() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex gap-10 text-gray-700 font-medium text-lg">
-          <a href="#">AI Journal</a>
-          <a href="#">Reviews</a>
-          <a href="#">Guides</a>
-        </nav>
+
+
+<nav className="hidden md:flex gap-10 text-gray-700 font-medium text-lg">
+  <Link to="/">AI Journal</Link>
+  <Link to="/weekly-reflection">Weekly Reflection</Link>
+  <Link to="#">Reviews</Link>
+  <Link to="#">Guides</Link>
+</nav>
+
 
         {/* User Section */}
         <div className="flex gap-4 items-center">

@@ -1,3 +1,5 @@
+import json
+import re
 from fastapi import APIRouter
 from pydantic import BaseModel
 import google.generativeai as genai
@@ -25,19 +27,20 @@ class JournalEntry(BaseModel):
 
 @router.post("/analyze/")
 async def analyze_journal(entry: JournalEntry):
-
     prompt = f"""
 You're an empathetic well-being coach helping someone reflect on their day.
 
 Be warm, understanding, and realistic — like a friend who listens deeply and responds kindly.
 
-Look at their full journal entry, understand their day, their energy, and their habits — and write back in a human, conversational tone.
+Return your response STRICTLY in this JSON format:
 
-Return ONLY:
-
-1. A short reflection summary — talk to them like a human. Mention specific things from their entry.
-2. A personal affirmation — encouraging words that feel real and not cheesy.
-3. A gentle suggestion for tomorrow — small, actionable, personalized advice.
+{{
+"summary": "Short reflection summary (conversational, warm tone)",
+"affirmation": "Personal affirmation (encouraging words)",
+"suggestion": "Gentle suggestion for tomorrow (specific action)",
+"sleepInsight": "Comment on their wake up & sleep times and its effect on their day",
+"waterInsight": "Comment on their water intake if needed"
+}}
 
 --- Journal Entry ---
 Gratitude: {entry.gratitude}
@@ -52,11 +55,26 @@ Sleep Time: {entry.sleepTime}
 Water Intake: {entry.waterIntake}
 ----------------------
 
-Important:
-- Be human.
-- Be specific.
-- Be kind.
-- Avoid generic advice.
-- Respond like you're talking to them directly.
-
+Be human. Be specific. Be kind.
+Respond ONLY in the JSON format specified.
 """
+
+    try:
+        model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
+        response = model.generate_content(prompt)
+
+        print("GEMINI RAW RESPONSE: ", response)
+
+        if response and response.text:
+            # Extract clean JSON from Gemini response
+            extracted_json = re.search(r"\{.*\}", response.text, re.DOTALL)
+            
+            if extracted_json:
+                parsed_data = json.loads(extracted_json.group())
+                return parsed_data  # This will send a clean dict to React
+
+        return {"reflection": "Couldn't generate reflection today. Please try again later!"}
+
+    except Exception as e:
+        print("GEMINI ERROR:", e)
+        return {"reflection": "AI generation failed due to server error."}

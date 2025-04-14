@@ -1,11 +1,12 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from app.routes import journal, ai_analysis
+from app.routes import journal, ai_analysis, dashboard
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",  # Your React Frontend URL
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(
@@ -23,6 +24,7 @@ def read_root():
 # Registering Routes
 app.include_router(journal.router)
 app.include_router(ai_analysis.router)
+app.include_router(dashboard.router)
 
 
 from app.db import database, engine, metadata

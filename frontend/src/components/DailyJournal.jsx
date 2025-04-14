@@ -2,10 +2,11 @@ import { useState } from 'react'
 import wakeup from '../assets/wakeup.png'
 import sleep from '../assets/sleep.png'
 import water from '../assets/water.png'
+import InsightCard from './InsightCard'
 
 import { useLocation } from "react-router-dom"
 
-export default function DailyJournal() {
+export default function DailyJournal({setMarkedEntries}) {
   const [gratitude, setGratitude] = useState('')
   const [physicalState, setPhysicalState] = useState('')
   const [selfCare, setSelfCare] = useState('')
@@ -15,6 +16,10 @@ export default function DailyJournal() {
   const [wakeUpTime, setWakeUpTime] = useState('')
   const [sleepTime, setSleepTime] = useState('')
   const [waterIntake, setWaterIntake] = useState('yes')
+
+  const user_id = localStorage.getItem('user_id')
+
+
 
   const [aiResponse, setAiResponse] = useState('')
 
@@ -26,10 +31,11 @@ export default function DailyJournal() {
     const today = new Date().toISOString().slice(0, 10)
 
     const newEntry = {
-      user_id: 'test_user',
+      user_id,
       date: today,
       gratitude,
-      mood: physicalState,
+      mood_emotion: mood,  // from MoodSelect
+      mood_physical: physicalState,  // from user input
       self_care: selfCare,
       notes,
       task,
@@ -38,6 +44,8 @@ export default function DailyJournal() {
       sleepTime,
       waterIntake,
     }
+    
+    
 
     try {
       // Save Journal Entry
@@ -49,11 +57,20 @@ export default function DailyJournal() {
 
       if (response.ok) {
         alert('Journal entry saved successfully!')
+      
+        // Fetch Latest Data for Calendar
+        // Fetch Latest Data for Calendar
+        const res = await fetch('http://localhost:8000/journal/')
+        const data = await res.json()
+        setMarkedEntries(data)   // Now Calendar gets fresh data
+        document.getElementById('calendar-section')?.scrollIntoView({ behavior: 'smooth' })
 
-        // Generate AI Analysis
+
+      
+        // Generate AI Reflection
         const analysisEntry = {
           gratitude,
-          physicalState,  // this is the manually entered physical state
+          physicalState,
           selfCare,
           notes,
           task,
@@ -61,29 +78,31 @@ export default function DailyJournal() {
           wakeUpTime,
           sleepTime,
           waterIntake,
-          mood,   // This is coming from MoodSelect screen
+          mood,
           createdAt: new Date().toISOString(),
         }
-        
-        
-
+      
         const aiResponseFetch = await fetch('http://localhost:8000/analyze/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(analysisEntry),
         })
-
+      
         if (aiResponseFetch.ok) {
           const data = await aiResponseFetch.json()
-        
-          if (data && data.reflection) {
-            setAiResponse(data.reflection)
+          if (data && data.summary) {
+            setAiResponse(data)
           } else {
-            setAiResponse("Couldn't generate reflection today. Try again later!")
+            setAiResponse({
+              summary: "Couldn't generate reflection today. Try again later!",
+              affirmation: "",
+              suggestion: "",
+              sleepInsight: "",
+              waterInsight: "",
+            })
           }
         }
-        
-
+      
         // Reset Form
         setGratitude('')
         setPhysicalState('')
@@ -98,9 +117,9 @@ export default function DailyJournal() {
         alert('Failed to save journal entry.')
       }
     } catch (error) {
-      console.error('Error:', error)
-      alert('Server error.')
-    }
+      console.error('Error saving journal entry:', error)
+      alert('An error occurred while saving your journal entry.')
+    }      
   }
 
   return (
@@ -196,13 +215,17 @@ export default function DailyJournal() {
       </button>
 
       {aiResponse && (
-        <div className="bg-purple-100/50 mt-10 p-6 rounded-2xl shadow-inner">
-          <h2 className="text-2xl font-bold mb-4 text-purple-600">AI Reflection</h2>
-          {aiResponse.split('\n\n').map((section, idx) => (
-            <p key={idx} className="text-gray-700 whitespace-pre-wrap">{section.replace(/\*\*/g, '')}</p>
-          ))}
-        </div>
-      )}
+  <div className="space-y-6 mt-10">
+
+    <InsightCard title="Today's Reflection" text={aiResponse.summary} />
+    <InsightCard title="Affirmation for You" text={aiResponse.affirmation} />
+    <InsightCard title="Suggestion for Tomorrow" text={aiResponse.suggestion} />
+    <InsightCard title="Sleep & Wake Up Insight" text={aiResponse.sleepInsight} />
+    <InsightCard title="Water Intake Insight" text={aiResponse.waterInsight} />
+
+  </div>
+)}
+
     </div>
   )
 }

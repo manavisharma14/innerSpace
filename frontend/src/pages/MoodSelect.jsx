@@ -21,9 +21,11 @@ export default function MoodSelect() {
 
   const handleContinue = () => {
     if (selected) {
-      navigate("/journal", { state: { mood: selected } })
+      navigate("/journal", { state: { mood_emotion: selected } })
     }
   }
+  
+  
 
   return (
     <motion.div
