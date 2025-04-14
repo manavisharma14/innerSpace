@@ -4,3 +4,5 @@ requests
 python-dotenv
 sqlalchemy
 pydantic
+databases[postgresql]
+
