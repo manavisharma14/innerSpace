@@ -6,3 +6,4 @@ sqlalchemy
 pydantic
 databases[postgresql]
 psycopg2-binary
+google-generativeai
