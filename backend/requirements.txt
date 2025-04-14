@@ -5,4 +5,4 @@ python-dotenv
 sqlalchemy
 pydantic
 databases[postgresql]
-
+psycopg2-binary
