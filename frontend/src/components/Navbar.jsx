@@ -3,6 +3,7 @@ import { signInWithPopup } from "firebase/auth"
 import { useState } from "react"
 import logo from "../assets/logoreflectai.png"
 import { Link } from "react-router-dom"
+import { motion } from "framer-motion"
 
 function Navbar() {
   const [user, setUser] = useState(null)
@@ -11,17 +12,11 @@ function Navbar() {
     try {
       const result = await signInWithPopup(auth, provider)
       setUser(result.user)
-      console.log("User logged in:", result.user)
-      console.log("User ID:", result.user.uid)
-  
-      // Optional: Store it for backend usage
       localStorage.setItem("user_id", result.user.uid)
     } catch (err) {
       console.error("Login failed", err)
     }
   }
-  
-  
 
   const handleLogout = () => {
     auth.signOut()
@@ -29,30 +24,31 @@ function Navbar() {
   }
 
   return (
-    <header className="w-full py-6 sticky top-0 z-50 ">
-      <div className="w-full h-32 max-w-screen-2xl mx-auto px-10 flex justify-between items-center rounded-full bg-white py-5 px-8 shadow-xl">
+    <motion.header
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="sticky top-0 z-50 bg-[#fdf2f8]/80 backdrop-blur-md shadow-sm px-6 sm:px-10"
+    >
+      <div className="max-w-screen-2xl mx-auto flex justify-between items-center py-4">
 
         {/* Logo */}
-        <div>
-          <img 
-            src={logo} 
-            alt="ReflectAI Logo" 
-            className="w-32 h-auto object-contain" 
-          />
-        </div>
+        <motion.img
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          src={logo}
+          alt="ReflectAI Logo"
+          className="w-28 h-auto object-contain"
+        />
 
         {/* Navigation Links */}
+        <nav className="hidden md:flex gap-8 text-gray-700 font-medium text-base">
+          <Link to="/">Home</Link>
+          <Link to="/weekly-reflection">Weekly Reflection</Link>
+        </nav>
 
-
-<nav className="hidden md:flex gap-10 text-gray-700 font-medium text-lg">
-  <Link to="/">AI Journal</Link>
-  <Link to="/weekly-reflection">Weekly Reflection</Link>
-  <Link to="#">Reviews</Link>
-  <Link to="#">Guides</Link>
-</nav>
-
-
-        {/* User Section */}
+        {/* Auth Section */}
         <div className="flex gap-4 items-center">
           {user ? (
             <>
@@ -60,7 +56,7 @@ function Navbar() {
                 <img
                   src={user.photoURL}
                   alt="User"
-                  className="w-8 h-8 rounded-full border border-gray-300"
+                  className="w-8 h-8 rounded-full border"
                 />
                 <span className="text-sm text-gray-600">Hi, {user.displayName}</span>
               </div>
@@ -72,17 +68,18 @@ function Navbar() {
               </button>
             </>
           ) : (
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
               onClick={handleLogin}
-              className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-full font-medium text-base"
+              className="bg-purple-500 hover:bg-purple-600 text-white px-5 py-2 rounded-full font-medium text-sm"
             >
               Log In
-            </button>
+            </motion.button>
           )}
-
         </div>
       </div>
-    </header>
+    </motion.header>
   )
 }
 

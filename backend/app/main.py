@@ -1,14 +1,16 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from app.routes import journal, ai_analysis, dashboard
+from app.init_db import add_unique_constraint
 
 app = FastAPI()
 
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://innerspaceai.netlify.app/"
+    "https://innerspaceai.netlify.app"
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,12 +30,14 @@ app.include_router(ai_analysis.router)
 app.include_router(dashboard.router)
 
 
+
 from app.db import database, engine, metadata
 metadata.create_all(engine)
 
 @app.on_event("startup")
 async def startup():
     await database.connect()
+    await add_unique_constraint() 
 
 @app.on_event("shutdown")
 async def shutdown():

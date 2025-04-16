@@ -9,14 +9,18 @@ import Home from './pages/Home'
 import MoodSelect from './pages/MoodSelect'
 import DailyJournal from './components/DailyJournal'
 import SelfCareCalendar from './pages/SelfCareCalendar'
-import WeeklyReflection from './pages/WeeklyReflection'
+import WeeklyAnalytics from './pages/WeeklyAnalytics'
+
 
 function App() {
   const [markedEntries, setMarkedEntries] = useState([])
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('https://innerspace-backend.onrender.com/journal/')
+      //const res = await fetch('https://innerspace-backend.onrender.com/journal/')
+      const res = await fetch(`${API_URL}/journal/`)
       const data = await res.json()
       setMarkedEntries(data)
     }
@@ -39,7 +43,7 @@ function App() {
           </>
         } />
 
-        <Route path='/weekly-reflection' element={<WeeklyReflection />} />
+        <Route path='/weekly-reflection' element={<WeeklyAnalytics />} />
       </Routes>
     </div>
   )

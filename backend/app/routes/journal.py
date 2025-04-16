@@ -2,13 +2,15 @@ from fastapi import APIRouter, HTTPException
 from app.schemas import JournalEntry
 from app.models import journal
 from app.db import database
+from sqlalchemy.dialects.postgresql import insert
+
 
 router = APIRouter()
 
 
 @router.post("/journal/")
 async def create_or_update_entry(entry: JournalEntry):
-    query = journal.insert().values(
+    query = insert(journal).values(
     user_id=entry.user_id,
     date=entry.date,
     gratitude=entry.gratitude,

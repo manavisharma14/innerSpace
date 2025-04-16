@@ -17,7 +17,8 @@ export default function DailyJournal({setMarkedEntries}) {
   const [sleepTime, setSleepTime] = useState('')
   const [waterIntake, setWaterIntake] = useState('yes')
 
-  const user_id = localStorage.getItem('user_id')
+  const userId = import.meta.env.MODE === 'development' ? 'test_user' : localStorage.getItem('user_id')
+
 
 
 
@@ -27,30 +28,35 @@ export default function DailyJournal({setMarkedEntries}) {
   const location = useLocation()
   const mood = location.state?.mood || physicalState  // fallback
 
+
+  const API_URL = import.meta.env.VITE_API_URL
+
+
   const handleSubmit = async () => {
     const today = new Date().toISOString().slice(0, 10)
 
     const newEntry = {
-      user_id,
+      user_id: userId,
       date: today,
       gratitude,
-      mood_emotion: mood,  // from MoodSelect
-      mood_physical: physicalState,  // from user input
+      mood_emotion: mood,
+      mood_physical: physicalState,
       self_care: selfCare,
       notes,
       task,
-      taskStatus,
-      wakeUpTime,
-      sleepTime,
-      waterIntake,
+      task_status: taskStatus,
+      wake_up_time: wakeUpTime,
+      sleep_time: sleepTime,
+      water_intake: waterIntake,
     }
+    
     
     
 
     try {
       // Save Journal Entry
-      // const response = await fetch('http://localhost:8000/journal/', {
-        const response = await fetch('https://innerspace-backend.onrender.com/journal/', {
+       const response = await fetch(`${API_URL}/journal/`, {
+      //  const response = await fetch('https://innerspace-backend.onrender.com/journal/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEntry),
@@ -61,7 +67,7 @@ export default function DailyJournal({setMarkedEntries}) {
       
         // Fetch Latest Data for Calendar
         // Fetch Latest Data for Calendar
-        const res = await fetch('http://localhost:8000/journal/')
+        const res = await fetch(`${API_URL}/journal/`)
         const data = await res.json()
         setMarkedEntries(data)   // Now Calendar gets fresh data
         document.getElementById('calendar-section')?.scrollIntoView({ behavior: 'smooth' })
@@ -83,8 +89,10 @@ export default function DailyJournal({setMarkedEntries}) {
           createdAt: new Date().toISOString(),
         }
       
-        const aiResponseFetch = await fetch('http://localhost:8000/analyze/', {
-          method: 'POST',
+        //const aiResponseFetch = await fetch('http://localhost:8000/analyze/', {
+        const aiResponseFetch = await fetch(`${API_URL}/analyze/`, {
+
+            method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(analysisEntry),
         })
@@ -125,9 +133,7 @@ export default function DailyJournal({setMarkedEntries}) {
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4">
-      <h1 className="text-4xl font-bold mb-10 text-purple-600 text-center">
-        Daily Journal
-      </h1>
+
 
       <div className="flex flex-col md:flex-row gap-16 items-center justify-center">
 
