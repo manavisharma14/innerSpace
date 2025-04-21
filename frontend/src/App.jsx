@@ -19,13 +19,27 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      //const res = await fetch('https://innerspace-backend.onrender.com/journal/')
-      const res = await fetch(`${API_URL}/journal/`)
-      const data = await res.json()
-      setMarkedEntries(data)
-    }
-    fetchData()
-  }, [])
+      const user_id = localStorage.getItem("user_id");
+      if (!user_id) {
+        setMarkedEntries([]);  // CLEAR old data!
+        return;
+      }
+  
+      try {
+        const res = await fetch(`${API_URL}/journal/user/${user_id}`);
+        const data = await res.json();
+        setMarkedEntries(data);
+      } catch (error) {
+        console.error("Error fetching user-specific journal entries:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  
+  
 
   return (
     <div className='bg-gradient-to-br from-pink-50 via-purple-50'>

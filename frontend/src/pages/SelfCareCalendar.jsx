@@ -1,20 +1,15 @@
 import { useState } from 'react'
 
-export default function SelfCareCalendar({ markedEntries }) {
-
+export default function SelfCareCalendar({ markedEntries = [] }) {
   const [selectedEntry, setSelectedEntry] = useState(null)
   const [currentMonth, setCurrentMonth] = useState(new Date())
-
-  // REMOVE THIS FETCH:
-  // useEffect(() => { fetchData }, [])
 
   const formatDateKansas = (date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`   // correct format: yyyy-mm-dd
+    return `${year}-${month}-${day}`
   }
-  
 
   const handlePrevMonth = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))
@@ -30,7 +25,7 @@ export default function SelfCareCalendar({ markedEntries }) {
     return [...Array(daysInMonth)].map((_, index) => {
       const day = index + 1
       const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
-      const dateStr = formatDateKansas(date).split('/').reverse().join('-') // 'yyyy-mm-dd'
+      const dateStr = formatDateKansas(date)
 
       const entryData = markedEntries.find((entry) => entry.date === dateStr)
       const isMarked = !!entryData
